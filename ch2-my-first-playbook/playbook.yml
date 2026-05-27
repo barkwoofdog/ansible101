@@ -1,0 +1,16 @@
+---
+- hosts: fedora
+  tasks:
+    - name: check free memory
+      shell: free -h
+      register: memory_output
+    - name: display free mem
+      debug:
+        var: memory_output.stdout_lines
+    
+    - name: check kernel info
+      shell: uname -a
+      register: kernel_info
+    - name: display kernel info
+      debug:
+        var: kernel_info.stdout_lines
