@@ -3,5 +3,5 @@ Learning Ansible with the wonderful series from [Jeff Geerling](https://www.jeff
 
 My end goal is to configure and harden my Proxmox server solely with Ansible
 
-Check out the Wiki for each Chapter/Episode. I did not own the book at the time of making this so the tracking between Episodes and Chapters of the book will be slightly off
+Check out the [Wiki](https://github.com/barkwoofdog/ansible101/wiki) for each Chapter/Episode. I did not own the book at the time of making this so the tracking between Episodes and Chapters of the book will be slightly off
 
