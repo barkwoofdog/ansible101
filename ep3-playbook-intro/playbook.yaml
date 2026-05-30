@@ -1,0 +1,31 @@
+---
+- name: Install Apache
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install Apache via DNF Module
+      dnf:
+        name:
+          - httpd
+          - httpd-devel
+        state: present
+
+    - name: Copy Apache Configurations
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: 0644
+      with_items:
+        - src: httpd.conf
+          dest: /etc/httpd/conf/httpd.conf
+        - src: httpd-vhosts.conf
+          dest: /etc/httpd/conf/httpd-vhosts.conf
+
+    - name: Verify Apache Started & Enable Start at Boot
+      service:
+        name: httpd
+        state: started
+        enabled: yes
