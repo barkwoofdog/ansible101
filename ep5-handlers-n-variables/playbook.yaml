@@ -1,0 +1,64 @@
+- name: Install Apache
+  hosts: pbtest
+  become: true
+
+  pre_tasks:
+    - name: Load Variable Files
+      include_vars: "{{ item }}"
+      with_first_found:
+        - "apache_{{ ansible_os_family }}.yaml"
+        - "apache_default.yaml"
+
+  vars:
+    proxy_vars:
+      http_proxy: http://10.200.0.1:8080
+      https_proxy: https://10.200.0.1:8080
+    apache_package: httpd
+    apache_service: httpd
+
+  handlers:
+    - name: restart apache
+      service:
+        name: "{{ apache_service}}"
+        state: restarted
+
+  tasks: 
+    - name: Download a file
+      get_url: 
+        url: http://ipv4.download.thinkbroadband.com/20MB.zip
+        dest: /tmp
+      environment:
+        http_proxy: http://10.200.0.1:8080
+
+    - name: Add environment variable to remote user shell
+      lineinfile:
+        dest: "~/.bash_profile"
+        regexp: '^ENV_VAR= '
+        line: 'ENV_VAR=value'
+      become: false 
+
+    - name: Get value of Environment var
+      shell: 'source ~/.bash_profile && echo $ENV_VAR'
+      register: foo
+
+    - debug: msg="The variable is {{ foo.stdout }}"
+    
+    - name: Ensure Apache is Installed
+      package:
+        name: "{{ apache_package }}"
+        state: present
+
+    - name: Copy Config File
+      copy:
+        src: files/test.conf
+        dest: /etc/httpd/conf.d/test.conf
+      notify: restart apache
+
+    - name: Flush Handlers Immediately
+      meta: flush_handlers
+    
+    - name: Ensure Apache is Running and Enabled
+      service: 
+        name: "{{ apache_service }}"
+        state: started
+        enabled: true

@@ -1,0 +1,14 @@
+[app]
+192.168.0.231 ansible_user=antman
+192.168.0.232 ansible_user=antman
+
+[db]
+192.168.0.233 ansible_user=antman
+
+[multi:children]
+app
+db
+
+#multi group variables for all servers
+[multi:vars]
+ansible_user=antman
