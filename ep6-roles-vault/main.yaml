@@ -1,0 +1,13 @@
+- name: Install Apache
+  hosts: app
+  become: true
+
+  pre_tasks:
+    - name: Load Variable Files
+      include_vars: "{{ item }}"
+      with_first_found:
+        - "apache_{{ ansible_os_family }}.yaml"
+        - "apache_default.yaml"
+  
+  roles: 
+    - webserver

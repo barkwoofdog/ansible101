@@ -1,0 +1,10 @@
+- name: Ensure Apache is Installed
+  package: 
+    name: "{{ apache_package }}"
+    state: present
+
+- name: Ensure Apache is Running and Enabled
+  service: 
+    name: "{{ apache_service }}"
+    state: started
+    enabled: true

@@ -1,0 +1,26 @@
+- name: Install Apache
+  hosts: app
+  become: true
+
+  handlers:
+    - import_tasks: restart-handler.yaml
+        
+  pre_tasks:
+    - name: Load Variable Files
+      include_vars: "{{ item }}"
+      with_first_found:
+        - "apache_{{ ansible_os_family }}.yaml"
+        - "apache_default.yaml"
+  
+  tasks:
+    - name: Ensure Apache is Installed
+      package: 
+        name: "{{ apache_package }}"
+        state: present
+
+    - name: Ensure Apache is Running and Enabled
+      service: 
+        name: "{{ apache_service }}"
+        state: started
+        enabled: true
+      notify: restart apache
